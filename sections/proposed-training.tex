@@ -1,0 +1,43 @@
+To reduce the problem space for testing and initial design, only the 2,136 \textit{jōyō kanji} will be used. These can be thought of as the core set of characters, as published by the Japanese Ministry of Education. As such this set of characters also has the most coverage in existing datasets. For \textit{jōyō kanji}, KanjiVG provides a hierarchical structure of labeled constituents and positions arranged by stroke ordering\cite{kanjivg}. The CASIA handwriting database will be used for handwritten data of common logographic characters \cite{casia-handwriting-db}.
+
+Training will be done inverse to the flow of the end network, starting with the Decoder.
+
+\subsection{Training the Transformer}
+To train the transformer, it is important for the network to learn the next area of focus. To do this, the network must answer \textit{"Does constituent A become before or after constituent B?"}, following the MLM described in BERT\cite{bert}\cite{transformers}.
+
+For example using \textbf{学}. When given $\tikz{\pic[scale=0.6] at (0, -5pt) {bottom};}$\textbf{子} starting state, should $\tikz{\pic[scale=0.6] at (0, -5pt) {top};}$\textbf{⺍} or $\tikz{\pic[scale=0.6] at (0, -5pt) {bottom};}$\textbf{冖} be focused to determine output \textbf{学}. The correct choice is the one that prunes the most trees, which is \textbf{⺍} here. Thus the encoding should prefer the $\tikz{\pic[scale=0.6] at (0, -5pt) {top};}$ as the area of focus when having state $\tikz{\pic[scale=0.6] at (0, -5pt) {bottom};}$\textbf{子} in the future.
+
+\begin{figure*}[h]
+    \begin{center}
+        \input{figures/kanji-tree.tex}
+        \caption[Character Encoding Sequence Tree]{A tree (trie) illustrating the layers of embeddings that can be decoded by traversal, the final node contains a the Unicode character to be retrieved.}
+        \label{fig:tree}
+    \end{center}
+\end{figure*}
+
+\subsection{Training the Observer}
+Observer training will be done on an extremely dense 16x16 pixel map using rendered Unicode characters with a single tier of constituent radicals. After which the network will be trained on larger resolutions,  increasing by factors of two until reaching the maximum of 512 x 512. For characters with more than two tiers of compound constituents, 32x32 will be the starting resolution. 64x64 for three tiers, etc. Each additional factor increased beyond the initial resolution will be trained on fewer epochs with a lower learning rate. This way the core features are learned at the lowest resolution and will translate when scaling up.
+
+Handwriting samples from the CASIA-HWDB1.2 database \cite{casia-handwriting-db} will be used to train and validate the observer's ability to detect and classify constituent radicals.
+
+When the Observer network sees an input, the position labels of the constituents are validated first, backpropagation is done in accordance to the full loss function. However, if the classification of a radical within these bounds is incorrect, loss is only backpropogated for the radical classification layers within the architecture.
+
+An important step in the attention mechanism is the \textit{self-attention} mechanism, which is needed as a precursor to the \textit{bidirectional} attention of the Transformer. YOLOv2 has improved bounding box prediction during training, utilizing k-means clustering as a means to seed bounds for individual classes\cite{yolo}. This training is necessary to initially answer the questions
+
+\begin{itemize}
+    \item "Is this input a radical or a compound character?"
+    \item "If it is a compound, what are the initial position labels, and what regions should be observed by the forward and backward attention mechanisms?"
+\end{itemize}
+
+By training this self-attention separately across the subset of compounds within the CJK Unicode characters, initial attention locations can be learned from the bounding boxes and position labels. The self-attention mechanism of works similarly to the single surface attention seen in Residual Attention Networks \cite {residual-attention} like DenseRAN \cite{denseran}.
+
+\subsection{Space Efficient Encoding}
+The existing GoogLeNet based method of Zhong et al. for handwritten Chinese character recognition has been compressed to the size of 27.77MB\cite{hccr-googlenet}. It is trained on the GB2312-80 standard level-1 set, containing 3,755 classes in classification, and boasts a recognition rate of 96.35\%. The performance is comparable to other methods, with the leader at 96.66\%\cite{denseran}, but has the fewest connections, taking the least space.
+
+The classifier identifies across the 3,755 classes individually. However, the succinct representation of positional encoded radicals should be able to outperform. Although the final structure of the Observer has not been determined, reducing the number of classes to 215x8 will drastically cut the number of connections needed in the convolutional network.
+
+As for decoding with the proposed implementation, the class size is a mere 1720 (215x8), and the cost function describing the weight of each transition can be encoded as a log probability, using only a 2 byte integer. The 3,755 classes only take 1.5 Bytes to represent.
+
+
+Assuming a naive implementation where every node contains the 2 byte cost and a 2 byte integer representing the Unicode character, we can encode the transition trie of Figure \ref{fig:tree}. A naive two-dimensional matrix representation uses only (1720 x 1720 x 4 x 2) 23,667,200 Bytes (23.6MB) while wasting 4 bits per node. This is ignoring the fact that most connections will have a weight of zero, even at the 215x8 level. By using spare matrix compression, we can reduce the size drastically, which has found use in Google's Japanese IME, which compressed it's dictionary by 84\% \cite{ime-compression}.
+The sparse trie representation can be seen in Figure \ref{fig:use}. Sparse tree boosting \cite{sparse-tree-boosting} can be used to avoid data redundancy, and the LOUDS structure \cite{louds-structure} can be used in memory to represent them by removing the need for pointers.

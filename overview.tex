@@ -1,0 +1,67 @@
+% !TEX encoding = UTF-8
+% !TEX program = lualatex
+\documentclass[10pt,letterpaper]{article}
+\usepackage{cite}
+
+\usepackage{style/arxiv}
+
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{url}            % simple URL typesetting
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amsmath}
+\usepackage{csquotes}
+\usepackage{tikz}
+
+% define common tikz pictures for position representations
+\input{figures/kanji-positions.tex}
+
+% tikz/pgf declarations
+\usetikzlibrary {3d, arrows.meta, backgrounds, bending, calc, decorations.pathmorphing, decorations.shapes, fadings, fit,  graphs, graphdrawing, patterns, positioning, shapes.multipart, shapes.geometric}
+\usegdlibrary {force, trees}
+
+
+\usepackage[pagebackref=true,breaklinks=true,colorlinks,bookmarks=false]{hyperref}
+
+% UTF-8 font supporting CJK characters
+\usepackage{luatexja-fontspec}
+
+% potentially use Noto font family, but this requires additional install
+
+% \setmainjfont{NotoSerifCJK-Bold}
+% \setmainjfont[     % setmainfontでもいいような
+%   BoldFont={NotoSerifCJK-Bold},
+%   BoldSlantedFont={NotoSerifCJK-Bold},
+%   AutoFakeSlant=0.2,
+%   SlantedFeatures={FakeSlant=0.2},
+%   BoldSlantedFeatures={FakeSlant=0.2}]
+% {NotoSerifCJK-Medium}
+
+\title{Bidirectional Attention for Offline CJK Character Recognition}
+\author{Tom Fuller}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\input{sections/introduction.tex}
+
+\section{CJK Character Structure}
+\input{sections/background-intuition.tex}
+
+\section{Related Research}
+\input{sections/background-research.tex}
+
+\section{Proposed Architecture}
+\input{sections/proposed-architecture.tex}
+
+\section{Training \& Data}
+\input{sections/proposed-training.tex}
+
+\section{A Data Set for Future Work}
+\input{sections/proposed-data-set.tex}
+
+\newpage
+\bibliographystyle{abbrv}
+\bibliography{compiled.bib}
+\listoffigures
+\end{document}

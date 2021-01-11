@@ -1,0 +1,15 @@
+\subsection{End-to-end Learning in Recurrent Attention Networks in Object Classification}
+Within Chinese text recognition, end-to-end \cite{attention-hanzi} and bidirectional \cite{blstm-sentence-level} approaches have been used, but only as far as sentence level character segmentation. However recurrent attention has found use in image classification tasks \cite{residual-attention}, greatly reducing the number of connections and reducing error rates by comparison to ResNet. This has found it's way into DenseRAN \cite{denseran} at the character level, but does not consider the nested hierarchical nature of characters within the compounds.
+
+\subsection{BERT - Deep Bidirectional Transformers}
+Natural language processing has reached new heights with the novel approach of pre-trained bidirectional transformers in BERT\cite{bert}. While the concept of bi-directional attention is applied to the sentence level, I think the classic internet meme can illustrate the idea:
+
+\begin{displayquote}
+    \textit{Aoccdrnig to a rscheearch at Cmabrigde Uinervtisy, it deosn't mttaer in waht oredr the ltteers in a wrod are, the olny iprmoetnt tihng is taht the frist and lsat ltteer be at the rghit pclae. The rset can be a toatl mses and you can sitll raed it wouthit porbelm. Tihs is bcuseae the huamn mnid deos not raed ervey lteter by istlef, but the wrod as a wlohe.}
+\end{displayquote}
+
+Although the statement itself is not exactly true\cite{meme-text}, typoglycemic text demonstrates that the human brain is not actually processing the entirety of a word when reading quickly. Since the "shape" of the word is important, when parsing the word between two space delimiters, the brain notes key features at the first and last position, and works it's way inwards until it arrives at what it has considerable confidence is the word.
+
+The application of pre-training transformers in BERT has been demonstrated in sentence-level tasks, and fine tuning at the token level. This has been done using a "masked language model" (MLM) as the pre-training objective for the encoder. By answering the question of "Which characters need to appear before the others" in a string of text, the ability to preserve semantic recall despite fluctuations in character sequence is made possible. Within NLP translation problems, this is the segmentation and reordering of the constituent concepts within a sentence.
+
+When the decoder is then presented the encoded sequence, it is able to decode the concept sequences back to a readable format in the desired translation language.

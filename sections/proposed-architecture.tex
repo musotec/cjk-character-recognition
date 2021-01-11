@@ -1,0 +1,82 @@
+The problem of CJK character classification can be simplified by utilizing the structure within the characters. In order to tackle the handwritten recognition task effectively, we must simplify the problem. The approach outlined here is designed with goals of future extensibility through transfer learning. Each section describes a module that can be individually trained to achieve the end goal of offline CJK character recognition.
+
+\subsection{Observe - Convolutional Handwriting Classifier}
+The input must break the handwritten character into the constituent radicals that compose it. This task is similar to the object detection and classification problem. When performing detection in regions within a handwritten CJK character, the end goal is to group strokes belonging to each component within a compound character at the current depth. This can be performed on multiple feature grids by the multi-headed attention, providing resolution granularity during constituent observation. For an input, the network will return a feature vector of up to \(n\) constituents, $\vec{c}_n = <\vec{O}_0, \vec{O}_1, ... \vec{O}_{n-1}>$ at the current depth. The tuple $\vec{O}_n = (p_n,r_n)$ is the observed constituent at the current level, containing a position and radical encoding respectively.
+
+The radical result, $r_n$ will be marked by \textbf{？} if the constituent is unrecognized, signaling to the Transformer that additional depth is needed in a particular region to achieve tokenization by the Encoder.
+
+\subsection{Encode - Attention Based Character Tokenization}
+The second network structure is the first half of a Transformer, prevalent in linguistic models of natural language processing\cite{transformers}. The Encoder uses the Observer network as a means of classification to tokenize a character into a sequence of embeddings. The embedding sequence leads to higher order classification at the Unicode character level, additionally driving the encoder-decoder attention.
+
+Following the attention mechanism of Transformer, , attention can be given areas for use by the Observer network. While the linguistic case is unidimensional over a series in text, the lexicographic case mandates two dimensions to span the character space as shown in Figure \ref{fig:attention} and \ref{fig:encoder}.
+
+% figure of observations
+\begin{figure*}[h]
+    \begin{center}
+        \input{figures/observer-encoder-transform.tex}
+        \caption[Encoder-Observer interaction]{The interactions of the Encoder network.
+            The encoder uses it's attention to query the Observer for observations in a given region.
+            The observations are used to create an embedding sequence for the Decoder.
+            The attention mechanism is then driven in jointly by both the encoder and the decoder's processing of the token sequence. }
+        \label{fig:encoder}
+    \end{center}
+\end{figure*}
+
+The Encode network needs only to provide enough focus to obtain a sequence of encoded inputs capable of returning the correct Unicode character by the Decoder. This in practice makes execution time much faster than the $O(n^2)$ theoretical bound of a Transformer. Time is saved by avoiding extraneous and potentially misleading classifications, which can be seen in Figure \ref{fig:biang}. Processing only core constituents solves the misalignment between focus order and stroke order. This also improves performance in characters with variants by resolving before attention is spent on the differing features.
+
+\begin{figure*}
+    \begin{center}
+        \input{figures/multi-head-positional-attention.tex}
+        \caption[Multi-head Positional Encoding of Transformer]{The positional encoding mechanism of the Transformers. On the left, input sinusoids are shown. The selected waves in bold are chosen arbitrarily from each sine and cosine pair. The waves of highest energy for a given input is selected to control the area of attention. On the right, the same attention selection for the three heads is shown being passed through the convolutional observer and concatenated. The concatenated result is then used by the Encoder and Decoder to determine future positions of attention.}
+        \label{fig:attention}
+    \end{center}
+\end{figure*}
+
+\subsection{Decode - Unicode Character Retrieval from Embedding Sequence}
+The final portion of the network will process two encoded sequences in parallel, as part of the bidirectional approach seen in BERT\cite{bert}. By creating two regions of focus, the result can be reached faster, and potentially without using all the information. The main result from the decoder is in providing a single UTF-16 character (represented across a weighted probability vector of all Unicode CJK characters).
+
+Since the decode network takes only a tokenized embedding sequence, the decoder can be trained quickly with ground truth data outside of the computer vision components. Fine tuning of Transformers in subsequent training sessions has been quite effective\cite{transformers}\cite{bert}. By training the fully connected output layers from the decoder, future questions can be answered, making this architecture extensible.
+
+\subsection{Summary}
+The Observer network will learn
+\begin{itemize}
+    \item "Are any CJK constituents located in this handwriting sample? Where?"
+    \item "Is the constituent a known radical? should it be broken further?"
+\end{itemize}
+The Encode network will learn
+\begin{itemize}
+    \item "What does the position of one ideograph mean in relation to others?"
+    \item "What region should get attention so a tokenized sequence can be given to the decoder?"
+\end{itemize}
+The Decode network will learn
+\begin{itemize}
+    \item "What Unicode CJK character does this sequence of radicals and positions represent?"
+    \item "After what has been seen, what region should get attention next?"
+\end{itemize}
+
+The operational flow of the entire network is shown in Figure \ref{fig:use}.
+
+\newpage
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\section{Overview}
+\begin{figure*}[h]
+    \begin{center}
+        \input{figures/layers.tex}
+        \caption[Summary of Proposed Network Architecture Flow]{The overall network flow, illustrating the intuition behind the use of bidirectional attention.　Removed nodes and edges are indicated with dashed lines. Non-traversed edges are shown with thin lines.\newline
+            \newline (a) The handwritten input character 学 (study) is given.
+            \newline (b) The \textit{self-attention} of the Transformer first decides regions of focus for the \textit{bidirectional} cross attention.
+            Forward attention is shown in orange-red, while the backwards attention is shown in blue.
+            \newline (c) The first glimpse of the Observer, classifies both regions on the feature grid. Forward attention results in observation $\vec{f}_0$ = ($\tikz{\pic[scale=0.6] at (0, -5pt) {top};}$,\textbf{？}). Backwards attention results in observation $\vec{b}_0$ = ($\tikz{\pic[scale=0.6] at (0, -5pt) {bottom};}$,\textbf{子}).
+            \newline (d) The bidirectional traversal removes edges from the opposing sparse trie with it's information.
+                \newline\tab[0.5cm]　- The position information of $\vec{f}_0$ and $\vec{b}_0$ removes connections to ⺾
+                \newline\tab[1cm] because the non-compound bottom is present with a compound top, removing \textbf{荐} and \textbf{菰}.
+                \newline\tab[0.5cm]　- The remaining children of ⺾ are removed (\textbf{芥,苓,茶,荅,荼,莟,蒼,蓉,蔭,蓼,薈})
+                \newline\tab[1cm] because the bottom constituent is not \textbf{子}.
+                \newline\tab[0.5cm]　- The $\tikz\pic[scale=0.6] at (0, -5pt) {top};$$\tikz\pic[color=black!70,scale=0.6] at (0pt, -5pt) {bottom};$ connection is then fully removed without needing to observe whether 冖 or 𠆢.
+            \newline (e) The encoder-decoder pair determines the next area of attention unanimously at $\tikz\pic[scale=0.6] at (0, -5pt) {top};$$\tikz\pic[color=black!70,scale=0.6] at (0pt, -5pt) {top};$.
+            \newline (f) The second observation sees \textbf{⺍}, and the extraneous information of 冖 is not needed to encode the input, saving an observation cycle. The differentiation between (学/study), (孛/character), and   (學/school) is achieved with the succinct encoding sequence:  $\tikz\pic[scale=0.6] at (0, -5pt) {bottom};$\textbf{子}$\tikz\pic[scale=0.6] at (0pt, -5pt) {top};$$\tikz\pic[color=black!70,scale=0.6] at (0pt, -5pt) {top};$\textbf{⺍}. When decoded, the result is \textbf{学}.
+       }
+        \label{fig:use}
+    \end{center}
+\end{figure*}
+\newpage

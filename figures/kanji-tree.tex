@@ -1,0 +1,47 @@
+\tikz[
+    scale=0.8,
+    edge from parent path={(\tikzparentnode.south) -- (\tikzchildnode.north)},
+    sibling distance=42pt,
+    level distance=2cm,
+    every edge/.style={every path/.style={path fading=south}},
+    % every path/.style={color=black, thick, path fading=south},
+    every child node/.style={color=black,thick,outer sep=0pt,circle,minimum size=32pt,column sep={1.5cm,between origins},draw=none}
+] {
+    %\graph[tree layout,nodes={draw,circle},sibling sep=0pt]{r-> { a, , ,b-> {c,d}, ,e} };
+    \node[circle, draw, dashed, thick]{root}
+        child[color=black!90] {
+            node[draw, name=top]{ }
+                child[color=black!90]{node[draw,name=radical]{一}}
+                child[color=black!50]{node[draw]{丨}}
+                child[color=black!30] {node{...}}
+                child[color=black!90]{node[draw]{⺾}
+                    child[color=white]{node{\(next\ position\ layer\)}}
+                    child[color=white]
+                    child[ultra thick, -stealth]
+                    child[color=white]
+                    child[color=white]
+                }
+                child[color=black!30] {node{...}}
+                child[color=black!90]{node[draw]{龠}}
+                child[color=black!90]{node[draw]{\textbf{？}}}
+            }
+        child[color=black!50] {node[draw, name=bottom]{}}
+        child[color=black!30] {node{...}}
+        child[color=black!20] {node{}}
+        child[color=black!5] {node{\(8\ positions\ per\ layer\)}}
+        child[color=black!20] {node{} child[color=white,anchor=west]{node{\(214\ positions\ per\ child\)}}}
+        child[color=black!30] {node{...}}
+        child[color=black!50] {node[draw, name=nyou]{}}
+        child[color=black!90] {node[draw, name=all]{}};
+
+    \pic at ($(top.center)-(0.275,0.275)$) {top};
+    \pic at ($(bottom.center)-(0.275,0.275)$) {bottom};
+    \pic at ($(nyou.center)-(0.275,0.275)$) {nyou};
+    \pic at ($(all.center)-(0.275,0.275)$) {all};
+
+    \node[name=radlayer1] at ($(radical.west)-(2,0)$) {\(radical\ layer\)};
+    \node[name=poslayer1] at ($(radlayer1.north)+(0,1.5cm)$) {\(position\ layer\)};
+    \node[name=ghost] at ($(radlayer1.north)-(0,2cm)$) {};
+    \draw[->] (poslayer1) -> (radlayer1);
+    \draw[dashed,-Stealth] (radlayer1) -> (ghost);
+}

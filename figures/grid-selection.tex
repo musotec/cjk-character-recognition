@@ -1,0 +1,41 @@
+\begin{scope}[transform shape, line cap=round,scale=0.5, yshift=80]
+
+    %\draw[help lines] (10mm,10mm) grid (100mm,100mm);
+
+    \def\wgrid{100mm}
+
+    \draw[help lines, red, dashed, thick] (0mm,0mm) grid [step=\wgrid/5] (\wgrid,\wgrid);
+    \draw[help lines, green!80!black, dashed, thick] (0mm,0mm) grid [step=\wgrid/3] (\wgrid,\wgrid);
+    \draw[help lines, blue, dashed, thick] (0mm,0mm) grid [step=\wgrid/2] (\wgrid,\wgrid);
+    \clip (0mm, 0mm) rectangle (\wgrid, \wgrid);
+
+    \def\gx{1}
+    \def\gy{2}
+    \def\gxx{5}
+    \def\bx{1}
+    \def\by{0}
+    \def\rx{1}
+    \def\ry{1}
+    \def\rwidth{3}
+    \newcommand{\dr}{\wgrid/10}
+    \newcommand{\dg}{\wgrid/6}
+    \newcommand{\db}{\wgrid/4}
+
+    \newcommand{\AttentionGrid}[2]{
+        \node (blue) [rounded corners=1pt, #1=blue!90!black, minimum height=2*\db, minimum width=2*\db, #2] at (\db+\bx*\db,\db+\by*\db) {};
+        \node (red) [rounded corners=1pt, #1=red!90!black, opacity=0.8, minimum height=2*\rwidth*\dr, minimum width=2*\rwidth*\dr, #2] at (\dr + \rx*\dr + \rx*\rwidth*\dr,\dr + \ry*\rwidth*\dr + \ry*\dr) {};
+        \node (green) [rounded corners=1pt, #1=green!80!black, minimum height=2*\dg, minimum width=2*\dg, #2] at (\gx*\dg,\dg+\gy*\dg) {};
+
+        \node (green2) [rounded corners=1pt, #1=green!80!black, minimum height=2*\dg, minimum width=2*\dg, #2] at (\gxx*\dg,\dg+\gy*\dg) {};
+    }
+
+    \begin{scope}[transparency group, fill opacity=0.55, draw opacity=1]
+        \begin{scope}[blend group=screen]
+            \AttentionGrid{fill}{}
+        \end{scope}
+    \end{scope}
+    %
+    \begin{scope}[transparency group, opacity=0.8, every node/.style={fill=none}]
+        \AttentionGrid{ultra thick,draw,color}{remember picture}
+    \end{scope}
+\end{scope}

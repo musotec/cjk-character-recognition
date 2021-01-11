@@ -1,0 +1,30 @@
+\begin{scope}[yshift=64,xshift=260,z={(10:10mm)},x={(165:10mm)}]
+    \begin{scope}[canvas is zx plane at y=0, scale=1.125]
+
+    % Draw the Kanji stroke on the grid
+    \input{figures/kanji-learn-svg.tex}
+
+    \input{figures/grid-selection.tex}
+    \end{scope}
+
+    \begin{scope}[canvas is zy plane at x=0]
+        \node (head) at ($(blue.south)+(0.25,-0.25)$) [transform shape] {multi-head attention};
+    \end{scope}
+
+    \begin{scope}[z={(12.5:7mm)},canvas is zy plane at x=0]
+        \node (conv) at ($(blue.south)+(0,-1.1)$) [transform shape] {{\footnotesize convolutional observation network}};
+    \end{scope}
+
+    \begin{scope}[z={(15:5mm)},canvas is zy plane at x=0]
+        \draw[transform shape, ->] (head) -> (conv);
+        \node (conc) at ($(blue.south)+(-1.5,-2)$) [transform shape] {concatenate};
+    \end{scope}
+
+\end{scope}
+\begin{scope}[xshift=260,z={(26:10mm)},x={(165:15mm)}] %,y={(-155:10mm)}]
+    \begin{scope}[canvas is zx plane at y=-200]
+        \node at ($(B7.south)+(-0.5, -0.5)$) [transform shape] {encoder-decoder attention};
+    \end{scope}
+\end{scope}
+
+\draw[->] (conv) -> (conc);

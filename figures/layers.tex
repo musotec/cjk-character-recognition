@@ -1,0 +1,232 @@
+%\documentclass[crop, tikz]{standalone}
+%\usepackage{tikz}
+%\usepackage{amsmath}
+%
+%\usetikzlibrary{decorations.pathmorphing, positioning, backgrounds, arrows.meta, calc}
+
+\definecolor{echoreg}{HTML}{ff4400}
+\definecolor{echodrk}{HTML}{0044ff}
+
+\tikzstyle{mynode} = [text=black, very thick,
+    rectangle, inner sep=10pt, inner ysep=20pt]
+\tikzstyle{fancytitle} =[text=black]
+
+
+\tikzstyle{labelnode} = [text=black, very thick,
+draw=none, font=\normalsize, outer sep=0pt]
+
+\newcommand{\yslant}{0.5}
+\newcommand{\xslant}{-0.6}
+
+\begin{tikzpicture}[scale=0.58,every node/.style={minimum size=1cm},on grid]
+
+	\node [mynode, scale=0.85] at (10.5, 0) (box){%
+		\begin{minipage}{0.2\textwidth}
+
+          \tikz[
+              yshift=50,
+              edge from parent path={(\tikzparentnode.south) -- (\tikzchildnode.north)},
+              every child node/.style={color=black,scale=0.35,thick,outer sep=0pt,circle,minimum size=16pt,draw,column sep={1.5pt,between origins}},
+              font=\Huge
+          ] {
+
+          % define the set of forward observed nodes
+          \node (fA) [draw, thick, circle, scale=0.35, fill=echoreg!20] at (0,0) {A}; % 十 pin={0:\scriptsize{t}}
+          \node (fB) [draw, thick, circle, scale=0.35, fill=echoreg!20] at (0,-1) {\textbf{？}};
+          \node (fX) [draw, thin, circle, scale=0.35, fill=white] at (1,-1) {宀}; % 宀 (字)
+          \pic [scale=0.9] at ($(fA.mid)-(0.225,0.155)$) {top};
+          \node (fC) [draw, thick, circle, scale=0.35, fill=echoreg!40, double] at (0,-2) {C};
+          \pic [scale=0.9] at ($(fC.mid)-(0.225,0.155)$) {top};
+          \node (fD) [draw, dashed, thick, circle, scale=0.35, fill=white] at (1,-2) {D};
+          \pic [scale=0.9] at ($(fD.mid)-(0.225,0.155)$) {bottom};
+
+          % define the set of result nodes
+          \begin{scope}[xshift=5,yshift=5,scale=1.1,
+              every pin edge/.style={draw=none}]
+              \node (rA) [draw, thick, circle, scale=0.35, fill=white, dashed] at (0,-4) {⺾}; % ⺾ (芥) 1st CUT [荐,菰 because bottom is compound, top is not]; also cuts 芥苓茶荅荼莟蒼蓉蔭蓼薈... after first observation without having to look at [top][bottom] to determine if it is 冖 or 𠆢. ⺾/𠆢 in this path is fully cut before observation of [top][top] because ALL possible bottom characters in the tree are not 子.
+
+              \node (rB) [draw, thick, circle, scale=0.35, fill=white, pin={[pin distance=-15pt]below:\textsf{孛}}] at (1,-4) {十}; % 十 (孛/character)(學/school)
+              \node (rC) [draw, thick, circle, scale=0.35, fill=echoreg!50!echodrk!50, double, pin={[name=p1,pin distance=-15pt]below:\textbf{\underline{学}}}] at (2,-4) {\textbf{⺍}}; %　⺍ (学/study)
+              \node (rD) [draw, thick, circle, scale=0.35, fill=white, pin={[pin distance=-15pt]below:學}] at (3,-4) {𦥯}; % 𦥯 (學/school)
+              \node[labelnode, above=-15pt, scale=1.15] at ($(p1.south)$) {\textbf{(f)}};
+          \end{scope}
+          % 學学孛字孕
+
+%          \node (D) [draw, thick, circle, scale=0.35, fill=echoreg!40] at (2,-5) {D};
+
+%  電子 (でんしゃ) means "electron" but literally translates to "electric child", 孛 combines "above" and "child"
+
+
+
+          \begin{scope}[xshift=70]
+              \node (bA) [draw, thick, circle, scale=0.35, fill=echodrk!20] at (0,0) {A};
+              \node (bB) [draw, thick, circle, scale=0.35, fill=echodrk!20] at (0,-1) {\textbf{子}};
+              \pic [scale=0.9] at ($(bA.mid)-(0.225,0.155)$) {bottom};
+              \node (bC) [draw, thick, circle, scale=0.35, fill=echodrk!40] at (1,-1) {C};
+              \pic [scale=0.9] at ($(bC.mid)-(0.225,0.155)$) {top};
+
+              \node (bD) [draw, thick, circle, scale=0.35, fill=echodrk!40, double] at (0,-2) {D};
+              \pic [scale=0.9] at ($(bD.mid)-(0.225,0.155)$) {top};
+
+              \node (bE) [draw, thick, circle, scale=0.35, fill=white, dashed] at (1,-2) {E};
+              \pic [scale=0.9] at ($(bE.mid)-(0.225,0.155)$) {bottom};
+          \end{scope}
+
+          \node[labelnode, scale=1.15] at ($(fD)!.5!(bD) - (0,15pt)$) {\textbf{(e)}};
+          \draw[ultra thick] (fA) -- (fB);
+          \draw[ultra thick] (fB) -- (fC);
+          \draw[thin] (fA) -- (fX);
+          \draw[densely dashed] (fB) -- (fD);
+
+          \draw[ultra thick] (bA) -- (bB);
+          \draw[ultra thick] (bB) -- (bC);
+          \draw[ultra thick] (bC) -- (bD);
+          \draw[densely dashed] (bC) -- (bE);
+
+          \draw[densely dashed] (fC) -- (rA);
+          \draw (fC) -- (rB);
+          \draw[ultra thick] (fC) -- (rC);
+          \draw (fC) -- (rD);
+
+          \draw (bD) -- (rB);
+          \draw[ultra thick] (bD) -- (rC);
+          \draw (bD) -- (rD);
+
+          }
+    	\end{minipage}
+	};
+
+	\node[fancytitle, scale=0.8] at (box.north) {\bf Sparse Trie Traversal:};
+
+	% Layer 2
+	\begin{scope}[
+		yshift=-250,
+		every node/.append style={yslant=\yslant,xslant=\xslant},
+		yslant=\yslant,xslant=\xslant,
+        on background layer
+	]
+        \draw[black, dashed, thin] (0,0) rectangle (7,7);
+
+        \begin{scope}[yshift=-20,xshift=40]
+         \begin{scope}[yshift=40]
+            \def\wgrid{50mm}
+            \def\wbox{\wgrid/4}
+
+            \draw[help lines, black!40] (0mm,0mm) grid [step=\wgrid/4] (\wgrid, \wgrid);
+
+            % Draw nodes and labels on graph
+            \begin{scope}[xshift=0.5*\wbox, yshift=0.5*\wbox]
+                % nodes
+                \node (a) [draw, thick, circle, scale=0.5, fill=echoreg] at (0*\wbox, 3*\wbox) {};
+                \draw[fill=echodrk] (3*\wbox,0*\wbox) circle (.1);
+                \node (b) [draw, thick, circle, scale=0.5, fill=echodrk] at (3*\wbox, 0*\wbox) {};
+                \node (c) [draw, double, circle, scale=0.5, fill=echodrk!50!echoreg] at (2*\wbox, 2*\wbox) {};
+                \node (d) [draw, densely dashed, circle, scale=0.5] at (1*\wbox, 1*\wbox) {};
+
+                % top labels
+                \pic[scale=0.45, color=black, anchor=south] at (3*\wbox-10,4*\wbox-10) {bottom};
+                \node [scale=0.75,anchor=west] at (3*\wbox-10,4*\wbox-10) {\textbf{子}};
+                \pic[scale=0.45, color=black, anchor=south] at (0*\wbox-10,4*\wbox-10) {top};
+                \node [scale=0.75,anchor=west] at (0*\wbox-10,4*\wbox-10) {\textbf{？}};
+                \pic[scale=0.45, color=black, anchor=south] at (1*\wbox-10,4*\wbox+3) {top};
+                \pic[scale=0.45, color=black!80, anchor=south] at (1*\wbox-10,4*\wbox-13) {bottom};
+                \node [scale=0.75,anchor=west] at (1*\wbox-10,4*\wbox-10) {\textbf{冖}};
+                \pic[scale=0.45, color=black, anchor=south] at (2*\wbox-10,4*\wbox+3) {top};
+                \pic[scale=0.45, color=black!80, anchor=south] at (2*\wbox-10,4*\wbox-13) {top};
+                \node [scale=0.75,anchor=west] at (2*\wbox-10,4*\wbox-10) {\textbf{⺍}};
+
+                % left labels
+                \pic[scale=0.45, color=black, anchor=south] at (-1*\wbox,0*\wbox-10) {bottom};
+                \pic[scale=0.45, color=black, anchor=south] at (-1*\wbox,3*\wbox-10) {top};
+                \pic[scale=0.45, color=black, anchor=south] at (-1*\wbox,1*\wbox+3) {top};
+                \pic[scale=0.45, color=black!80, anchor=south] at (-1*\wbox,1*\wbox-13) {bottom};
+                \pic[scale=0.45, color=black, anchor=south] at (-1*\wbox,2*\wbox+3) {top};
+                \pic[scale=0.45, color=black!80, anchor=south] at (-1*\wbox,2*\wbox-13) {top};
+            \end{scope}
+         \end{scope}
+        \end{scope}
+
+        % Draw edges between nodes
+        \draw[-latex, thick, color=echoreg] (a) -- (c);
+		\draw[-latex, thick, color=echodrk] (b) -- (c);
+        \draw (a) edge [draw, -latex, thin, dashed, color=black!70] (d);
+        \draw (c) edge [draw, -latex, thin, dashed, bend right=35, looseness=1.25, color=echoreg] (d);
+        \draw (c) edge [draw, -latex, thin, dashed, bend right=-35, looseness=1.25, color=echodrk] (d);
+
+        \fill[black] (1.75,0.35) node[right, scale=.7] {Bidirectional Attention};
+	\end{scope}
+
+    % Observation Layer
+    \begin{scope}[
+        yshift=-60,
+        every node/.append style={yslant=\yslant,xslant=\xslant},
+        yslant=\yslant,xslant=\xslant
+        ]
+        \fill[white,fill opacity=.75] (0,0) rectangle (7,7);
+        \draw[black, dashed, thin] (0,0) rectangle (7,7);
+
+        \begin{scope}[yshift=-20,xshift=20]
+            \begin{scope}[yshift=40]
+                \def\wgrid{50mm}
+                \def\wbox{\wgrid/16}
+
+                \draw[help lines, black!40] (0mm,0mm) grid [step=\wgrid/16] (\wgrid, \wgrid);
+                % Create the pixel labelings for the observations
+                \begin{scope}[transparency group, opacity=0.6]
+                    \fill[fill=black!30] (0,0) rectangle (\wgrid, \wgrid);
+
+                    \fill[fill=echoreg] (\wbox*2, \wbox*9) rectangle (\wbox*4, \wbox*13);
+                    \fill[fill=echoreg] (\wbox*4, \wbox*15) rectangle (\wbox*13, \wbox*10);
+                    \fill[fill=echoreg] (\wbox*12, \wbox*11) rectangle (\wbox*15, \wbox*8);
+
+                    \fill[fill=blue] (\wbox*10, \wbox*7) rectangle (\wbox*15, \wbox*3);
+                    \fill[fill=blue] (\wbox*5, \wbox*10) rectangle (\wbox*11, \wbox*8);
+                    \fill[fill=blue] (\wbox*6, \wbox*10) rectangle (\wbox*11, \wbox*0);
+                    \fill[fill=blue] (\wbox*2, \wbox*8) rectangle (\wbox*8, \wbox*4);
+
+                    \node (obstop) [draw=none] at (\wgrid/2,\wbox*13) {};
+                    \node (obsbot) [draw=none] at (\wgrid/2,\wbox*6) {};
+                \end{scope}
+            \end{scope}
+        \end{scope}
+
+        \fill[black] (3.75,0.35) node[right, scale=.7] {Observations};
+    \end{scope}
+
+	% Input Layer
+	\begin{scope}[
+		yshift=0,
+		every node/.append style={yslant=\yslant,xslant=\xslant},
+		yslant=\yslant,xslant=\xslant
+	]
+		\fill[white,fill opacity=.75] (0,0) rectangle (7,7);
+		\draw[black, dashed, thin] (0,0) rectangle (7,7);
+
+        \begin{scope}[yshift=-20,xshift=20]
+            \begin{scope}[yshift=40]
+                \def\wgrid{50mm}
+                \def\wbox{\wgrid/16}
+
+                \draw[help lines, black!40] (0mm,0mm) grid [step=\wbox] (\wgrid, \wgrid);
+
+            \end{scope}
+
+            \input{figures/kanji-learn-svg.tex}
+        \end{scope}
+
+		\fill[black]
+			(0.5,6.5) node[right, scale=.7,name=inputlabel] {Input};
+	\end{scope}
+
+    \node (laba) [labelnode, left=5pt] at ($(inputlabel.west)$) {\textbf{(a)}};
+    \node (labc) [labelnode] at ($(laba.mid)-(0,2)$) {\textbf{(c)}};
+    \draw[tips, -{Latex[open,length=8pt]}] ($(laba.mid)+(15pt,-5pt)$) to [edge label'=\textbf{(b)}] ($(labc.mid)+(15pt,5pt)$);
+    \node (labd) [labelnode, below left] at ($(d.mid)$) {\textbf{(d)}};
+\begin{scope}[on background layer]
+% Interlayer crossconnections
+\draw (obstop) edge [thick, echoreg!65!black, arrows={-Latex[length=10pt, sep=-8pt]}, decoration={snake, segment length=2mm, amplitude=0.2mm}, decorate, double, in=90] (a);
+\draw (obsbot) edge [thick, blue!70!black, arrows={-Latex[length=10pt, sep=-5pt]}, decoration={snake, segment length=2mm, amplitude=0.2mm}, double, decorate, out=90,in=90] (b);
+
+\end{scope}
+
+\end{tikzpicture}

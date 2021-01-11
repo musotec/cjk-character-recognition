@@ -1,0 +1,86 @@
+\definecolor{bluee}{HTML}{0022ff}
+\definecolor{orangee}{RGB}{233,127,2}
+\definecolor{yellowe}{RGB}{208,162,0}
+\definecolor{rede}{HTML}{ff2200}
+\definecolor{greene}{RGB}{138,155,15}
+
+\definecolor{metac}{RGB}{56,62,64}
+\definecolor{dkbluee}{RGB}{0,62,114}
+
+%\begin{document}
+\begin{tikzpicture}
+
+    % input rectangle
+    \draw (0,0) node[scale=5, anchor=center, color=black!70] {学};
+	\node[color=greene, rectangle, draw, thick, minimum width=5em, minimum height=5em] (input) at (0, 0) {};
+
+
+    \node[color=bluee, rectangle, draw, thick, minimum width=4.55em, minimum height=3em] (A) at (0, -0.75em) {};
+    \node[color=orangee, rectangle, draw, thick, minimum width=4.725em, minimum height=2em] (B) at (0, 1.3em) {};
+
+    \node[color=yellowe, rectangle, draw, dashed, thick, minimum width=4.6em, minimum height=1.1em] (C) at (0, 0.9em) {};
+    \node[color=rede, rectangle, draw, dashed, thick, minimum width=3.65em, minimum height=1em] (D) at (0, 1.7em) {};
+
+
+	\node[color=greene!60!black, below=0em of input] (l1) {\emph{input}};
+
+    \begin{scope}[minimum width=4em]
+        \fontsize{16}{16}
+    	\node[dkbluee, rectangle, draw, above right=-1.5em and 3em of input, thick]  (Ob) {${\vec{o}_{\tikz\pic[scale=0.5,color=dkbluee] {top};{\textbf{？}}}}$};
+
+    	\node[dkbluee, rectangle, draw, above=0em of Ob, thick]  (Oa)  {${\vec{o}_{\tikz\pic[scale=0.5,color=dkbluee] {bottom};{\normalsize \textbf{子}}}}$};
+    	\node[dkbluee, rectangle, draw, below=0em of Ob, thick]  (Oc)  {${\vec{o}_{\tikz\pic[scale=0.5,color=dkbluee] {top};{\normalsize \textbf{⺍}}}}$};
+    	\node[dkbluee, rectangle, draw, below=0em of Oc,thick]  (Od)  {${\vec{o}_{\tikz\pic[scale=0.5,color=dkbluee] {bottom};{\normalsize \textbf{冖}}}}$};
+    \end{scope}
+
+    \node[dkbluee, left=0em of Oa] (la) {$\tikz{\pic[scale=0.75, color=bluee] at (0,0) {bottom};}$};
+	\node[dkbluee, left=0em of Ob] (lb) {$\tikz{\pic[scale=0.75, color=orangee] at (0,0) {top};}$};
+	\node[dkbluee, left=0em of Oc] (lc) {$\tikz{\pic[scale=0.75, color=rede] at (0,0) {top};}$};
+	\node[dkbluee, left=0em of Od] (ld) {$\tikz{\pic[scale=0.75, color=yellowe] at (0,0) {bottom};}$};
+
+	\node[dkbluee, below=0em of Od] (lr) {\emph{observations}};
+
+    \draw[bluee,-stealth, thick] (A) -- (la);
+	\draw[orangee,-stealth, thick] (B) -- (lb);
+	\draw[rede,-stealth, thick, dashed] (C) -- (lc);
+	\draw[yellowe,-stealth, thick, dashed] (D) -- (ld);
+
+	\node[draw, dkbluee, thick, right=20em of input] (O) {
+        $\tikz{
+            \pic[scale=0.75, color=dkbluee] at (0,0) {bottom};
+            \node at (0.3,0.175) {\textbf{子}};
+            \pic[scale=0.75, color=dkbluee] at (.8,0) {top};
+            \pic[scale=0.75, color=dkbluee] at (1.3,0) {top};
+            \node at (1.6,0.175) {\textbf{⺍}};
+            \pic[scale=0.75, color=dkbluee] at (2.1,0) {bottom};
+            \node at (2.4,0.175) {\textbf{冖}};
+        }$
+    };
+	\node[dkbluee, below=0em of O] {\emph{embedding sequence}};
+
+	\draw[dkbluee, densely dashed, very thick] (Oa.north east) -- (O.north west);
+	\draw[dkbluee, densely dashed, very thick] (Od.south east) -- (O.south west);
+
+	\fill [opacity=0.2, dkbluee] (Oa.north east) -- (O.north west) -- (O.south west) -- (Od.south east) -- cycle;
+
+	% invisible nodes for relationship arc drawings
+	\node[right=14.75em of input, inner sep=0em] (dum1) {};
+	\node[right=1.5em of Ob, inner sep=0em] (dum2) {};
+	\node[right=1.5em of Oc, inner sep=0em] (dum3) {};
+
+	\draw[dkbluee, densely dotted, very thick] (Oa.east) edge[bend left=60] (Ob.east);
+	\draw[dkbluee, densely dotted, very thick] plot [smooth, tension=1.5] coordinates { (Oa.east) (dum2) (Oc.east)};
+	\draw[dkbluee, densely dotted, very thick] plot [smooth, tension=1.5] coordinates { (Oa.east) (dum1) (Od.east)};
+	\draw[dkbluee, densely dotted, very thick] (Ob.east) edge[bend left=60] (Oc.east);
+	\draw[dkbluee, densely dotted, very thick] plot [smooth, tension=1.5] coordinates { (Ob.east) (dum3) (Od.east)};
+	\draw[dkbluee, densely dotted, very thick] (Oc.east) edge[bend left=60] (Od.east);
+
+	\node[metac,rectangle, thick, align=center, draw, below left=3em and -4em of Od, text width=13.5em] (Q) {\texttt{"What order of constituent logograms encodes this handwritten input?"}};
+	\node[metac,below=0em of Q] (ql) {\emph{encoder network}};
+
+	\path[metac,-stealth, dashed, thick] (Q.east) edge[bend right] (6.2, -0.7);
+
+	\node[dkbluee] at (7, 0) (EN){\textbf{\emph{BERT}}};
+
+\end{tikzpicture}
+%\end{document}
