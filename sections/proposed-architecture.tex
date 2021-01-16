@@ -8,7 +8,7 @@ The radical result, $r_n$ will be marked by \textbf{？} if the constituent is u
 \subsection{Encode - Attention Based Character Tokenization}
 The second network structure is the first half of a Transformer, prevalent in linguistic models of natural language processing\cite{transformers}. The Encoder uses the Observer network as a means of classification to tokenize a character into a sequence of embeddings. The embedding sequence leads to higher order classification at the Unicode character level, additionally driving the encoder-decoder attention.
 
-Following the attention mechanism of Transformer, , attention can be given areas for use by the Observer network. While the linguistic case is unidimensional over a series in text, the lexicographic case mandates two dimensions to span the character space as shown in Figure \ref{fig:attention} and \ref{fig:encoder}.
+Following the bidirectional attention mechanism of the Transformers as seen in BERT \cite{bert}, attention can be given areas for use by the Observer network. While the linguistic case is unidimensional over a series in text, the lexicographic case mandates two dimensions to span the character space as shown in Figure \ref{fig:attention} and \ref{fig:encoder}.
 
 % figure of observations
 \begin{figure*}[h]
