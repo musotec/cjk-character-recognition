@@ -39,7 +39,7 @@ Similar to the tree structure created by hyponyms and hypernyms of language whic
                \draw (tree) -> (harvest);
             \end{scope}
         }
-        \caption[The Phono-semantic Relationship]{The phono-semantic relationship within the compound character, 菜 or \textit{vegetable}. The semantic component is a linguistic \textit{determinative}, providing the compound with elemental context. The phonetic component is semantically relevant here. Combined as \textit{"harvested plant"} for the character meaning \textit{vegetable}.}
+        \caption[The Phono-semantic Relationship of Han Characters]{The phono-semantic relationship within the compound character, 菜 or \textit{vegetable}. The semantic component is a linguistic \textit{determinative}, providing the compound with elemental context. The phonetic component is semantically relevant here. Combined as \textit{"harvested plant"} for the character meaning \textit{vegetable}.}
         \label{fig:figure1}
     \end{center}
 \end{figure}
@@ -65,7 +65,7 @@ It is worth noting that the \textit{kamae} group represented by $\tikz\pic[color
 To simplify similar character representations across Chinese (\textit{hanzi}), Japanese (\textit{kanji}), and Korean (\textit{hanja}) in the CJK languages, Unicode compresses similar representations into a single set of unified characters. This "Han unification" combines glyph variants by grapheme into a single code point within Unicode. The traditional Chinese glyph for "grass" uses four strokes in the radical (⺿), while simplified Chinese, Japanese, and Korean have three (⺾). The ⺿ and ⺾ characters both map to (U+8349, 草) and exist as variants. Due to the use as a radical, the four and three stroke variants contain separate encodings in the Unicode/CJK Radicals Supplement, allowing them to be rendered here.
 Figure \ref{fig:han-unification} illustrates the effect on constituent radicals. The term \textit{ideograph} is used when referring to the set of glyph variants representing a common idea.
 
-\begin{figure*}
+\begin{figure*}[h]
     \begin{center}
         \includegraphics[width=1\textwidth]{figures/han_unification.png}
         \caption[Regional Character Variants]{Regional differences within the Unicode character (U+8FD4).
@@ -78,17 +78,17 @@ Ideographic Description Sequences (IDS) in the Unicode standard\cite{unicode-ids
 
 \begin{figure*}[h]
     \begin{center}
-        \includegraphics[width=0.3\textwidth]{figures/biang-variants.png}
-        \caption[The 17 variants of \textit{biáng}]{The 17 variants of the character \textit{biáng}, a type of noodle. The last variant has constituents common across all variants colored to illustrate the core ideographs. \newline\textbf{These core constituents illustrate the intuition behind a bidirectional, multi-headed attention model.}}
-        \label{fig:biang}
+        \includegraphics[width=1\textwidth]{figures/ids-biang.jpg}
+        \caption[Unicode Ideographic Description Sequences]{An IDS of length 15 encoding the rendering of \textit{biáng} in OpenType. This sequence is just one capable of rendering \textit{biáng}, prior to it's inclusion in 2020\cite{unicode-ids}.
+            Image in figure from Adobe \cite{adobe-ids}.}
+        \label{fig:biang-ids}
     \end{center}
 \end{figure*}
 
 \begin{figure*}[t]
     \begin{center}
-        \includegraphics[width=1\textwidth]{figures/ids-biang.jpg}
-        \caption[Unicode Ideographic Description Sequences]{An IDS of length 15 encoding the rendering of \textit{biáng} in OpenType. This sequence is just one capable of rendering \textit{biáng}, prior to it's inclusion in 2020\cite{unicode-ids}.
-            Image in figure from Adobe \cite{adobe-ids}.}
-        \label{fig:biang-ids}
+        \includegraphics[width=0.3\textwidth]{figures/biang-variants.png}
+        \caption[The 17 variants of \textit{biáng}]{The 17 variants of the character \textit{biáng}, a type of noodle. The last variant has constituents common across all variants colored to illustrate the core ideographs. \newline\textbf{These core constituents illustrate the intuition behind a bidirectional, multi-headed attention model.}}
+        \label{fig:biang}
     \end{center}
 \end{figure*}

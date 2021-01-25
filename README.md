@@ -9,3 +9,18 @@ license:
 http://creativecommons.org/licenses/by-sa/3.0/
 
 The SVG conversion to TikZ is performed by this python script: https://github.com/paaguti/svg2tikz
+
+### Build Instructions
+Run `config-latex.sh` script to configure the latex environment.
+Notable CTAN packages that may be missing are pgf, csquotes, luatexja, and haranoaji (fonts).
+
+Sources are added as individually as .bib files to `/references`.
+These must have the first line as `@string{ ... ,\n` (new line after tag) due to the compilation script.
+The name of the reference is renamed to match the file name for better organization.
+
+These must be compiled to a single bibliography using the `compile-sources.sh` script.
+
+The pdf file `overview.pdf` can be compiled using the following command:
+```
+lualatex -synctex=1 -interaction=nonstopmode "overview".tex
+```

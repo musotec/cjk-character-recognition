@@ -1,4 +1,7 @@
-To reduce the problem space for testing and initial design, only the 2,136 \textit{jōyō kanji} will be used. These can be thought of as the core set of characters, as published by the Japanese Ministry of Education. As such this set of characters also has the most coverage in existing datasets. For \textit{jōyō kanji}, KanjiVG provides a hierarchical structure of labeled constituents and positions arranged by stroke ordering\cite{kanjivg}. The CASIA handwriting database will be used for handwritten data of common logographic characters \cite{casia-handwriting-db}.
+To reduce the problem space for testing and initial design, only the 2,136 \textit{jōyō kanji} will be used. These can be thought of as the core set of characters, as published by the Japanese Ministry of Education. This is analogous to the 3,755 characters of the GB2312-80 level-1 character set; the "base set" needed for general literacy of Chinese.
+
+Being a smaller subset of the GB2312-80 level-1, this has the most coverage in existing datasets.
+For \textit{jōyō kanji}, KanjiVG provides a hierarchical structure of labeled constituents and positions arranged by stroke ordering\cite{kanjivg}. The CASIA handwriting database will be used for handwritten data of common logographic characters \cite{casia-handwriting-db}.
 
 Training will be done inverse to the flow of the end network, starting with the Decoder.
 
